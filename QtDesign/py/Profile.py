@@ -1,0 +1,118 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'Profile.ui'
+#
+# Created by: PyQt5 UI code generator 5.13.2
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_ProfileWindow(object):
+    def setupUi(self, ProfileWindow):
+        ProfileWindow.setObjectName("ProfileWindow")
+        ProfileWindow.resize(280, 318)
+        self.centralwidget = QtWidgets.QWidget(ProfileWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame_2 = QtWidgets.QFrame(self.centralwidget)
+        self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_2.setObjectName("frame_2")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.frame_2)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.label_login = QtWidgets.QLabel(self.frame_2)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.label_login.setFont(font)
+        self.label_login.setObjectName("label_login")
+        self.gridLayout_2.addWidget(self.label_login, 0, 0, 1, 1)
+        self.edit_login = QtWidgets.QLineEdit(self.frame_2)
+        self.edit_login.setEnabled(False)
+        self.edit_login.setObjectName("edit_login")
+        self.gridLayout_2.addWidget(self.edit_login, 0, 1, 1, 1)
+        self.label_role = QtWidgets.QLabel(self.frame_2)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.label_role.setFont(font)
+        self.label_role.setObjectName("label_role")
+        self.gridLayout_2.addWidget(self.label_role, 1, 0, 1, 1)
+        self.edit_role = QtWidgets.QLineEdit(self.frame_2)
+        self.edit_role.setEnabled(False)
+        self.edit_role.setObjectName("edit_role")
+        self.gridLayout_2.addWidget(self.edit_role, 1, 1, 1, 1)
+        self.verticalLayout.addWidget(self.frame_2)
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.gridLayout = QtWidgets.QGridLayout(self.frame)
+        self.gridLayout.setObjectName("gridLayout")
+        self.lbl_name2 = QtWidgets.QLabel(self.frame)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.lbl_name2.setFont(font)
+        self.lbl_name2.setObjectName("lbl_name2")
+        self.gridLayout.addWidget(self.lbl_name2, 0, 0, 1, 1)
+        self.edit_name2 = QtWidgets.QLineEdit(self.frame)
+        self.edit_name2.setEnabled(False)
+        self.edit_name2.setObjectName("edit_name2")
+        self.gridLayout.addWidget(self.edit_name2, 0, 1, 1, 1)
+        self.lbl_name1 = QtWidgets.QLabel(self.frame)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.lbl_name1.setFont(font)
+        self.lbl_name1.setObjectName("lbl_name1")
+        self.gridLayout.addWidget(self.lbl_name1, 1, 0, 1, 1)
+        self.edit_name1 = QtWidgets.QLineEdit(self.frame)
+        self.edit_name1.setEnabled(False)
+        self.edit_name1.setObjectName("edit_name1")
+        self.gridLayout.addWidget(self.edit_name1, 1, 1, 1, 1)
+        self.lbl_name3 = QtWidgets.QLabel(self.frame)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.lbl_name3.setFont(font)
+        self.lbl_name3.setObjectName("lbl_name3")
+        self.gridLayout.addWidget(self.lbl_name3, 2, 0, 1, 1)
+        self.edit_name3 = QtWidgets.QLineEdit(self.frame)
+        self.edit_name3.setEnabled(False)
+        self.edit_name3.setObjectName("edit_name3")
+        self.gridLayout.addWidget(self.edit_name3, 2, 1, 1, 1)
+        self.verticalLayout.addWidget(self.frame)
+        self.btn_administration = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_administration.setObjectName("btn_administration")
+        self.verticalLayout.addWidget(self.btn_administration)
+        ProfileWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(ProfileWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 280, 21))
+        self.menubar.setObjectName("menubar")
+        ProfileWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(ProfileWindow)
+        self.statusbar.setObjectName("statusbar")
+        ProfileWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(ProfileWindow)
+        QtCore.QMetaObject.connectSlotsByName(ProfileWindow)
+
+    def retranslateUi(self, ProfileWindow):
+        _translate = QtCore.QCoreApplication.translate
+        ProfileWindow.setWindowTitle(_translate("ProfileWindow", "Profile"))
+        self.label_login.setText(_translate("ProfileWindow", "Login"))
+        self.label_role.setText(_translate("ProfileWindow", "Login"))
+        self.lbl_name2.setText(_translate("ProfileWindow", "First name"))
+        self.lbl_name1.setText(_translate("ProfileWindow", "Last name"))
+        self.lbl_name3.setText(_translate("ProfileWindow", "Patronymic"))
+        self.btn_administration.setText(_translate("ProfileWindow", "Administration"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    ProfileWindow = QtWidgets.QMainWindow()
+    ui = Ui_ProfileWindow()
+    ui.setupUi(ProfileWindow)
+    ProfileWindow.show()
+    sys.exit(app.exec_())

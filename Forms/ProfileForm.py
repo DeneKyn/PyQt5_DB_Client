@@ -17,7 +17,6 @@ class ProfileForm(QtWidgets.QMainWindow, Ui_ProfileWindow):
         self.btn_administration.clicked.connect(self.open_administration_form)
 
     def open_administration_form(self):
-        self.administration_form = AdministrationForm.AdministrationForm(self.db, self.user)
-        self.administration_form.show()
+        administration_form = AdministrationForm.AdministrationForm(self.db, self.user)
+        administration_form.show()
         self.close()
-

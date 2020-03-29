@@ -1,8 +1,5 @@
-import math
-
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QDateTime
-
 from QtDesign.py.UserChange import Ui_UserChange
 
 

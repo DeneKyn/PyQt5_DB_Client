@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 
+from Forms.ErrorDialog import ErrorDialog
 from Forms.UserChangeForm import UserChangeForm
 from Models.UserStatus import UserStatus
 from Models.UserType import UserType
@@ -16,7 +17,17 @@ class AdministrationForm(QtWidgets.QMainWindow, Ui_AdministrationWindow):
         self.table_fill(self.users)
         self.btn_find.clicked.connect(self.filter_users)
         self.tableWidget.clicked.connect(self.view_clicked)
+        self.btn_undo.clicked.connect(self.undo)
         self.tableWidget.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
+
+    def undo(self):
+        try:
+            self.db.backup_user()
+            self.filter_users()
+        except ValueError as err:
+            s = str(err)
+            error = ErrorDialog(s)
+            error.show()
 
     def table_fill(self, users):
         self.tableWidget.setRowCount(len(users))
@@ -39,7 +50,6 @@ class AdministrationForm(QtWidgets.QMainWindow, Ui_AdministrationWindow):
         )
         return users
 
-
     def insert_row(self, row_id, username, role, status, name1, name2, name3):
         self.tableWidget.setItem(row_id, 0, QtWidgets.QTableWidgetItem(username))
         self.tableWidget.setItem(row_id, 1, QtWidgets.QTableWidgetItem(role))
@@ -49,16 +59,11 @@ class AdministrationForm(QtWidgets.QMainWindow, Ui_AdministrationWindow):
         self.tableWidget.setItem(row_id, 5, QtWidgets.QTableWidgetItem(status))
 
     def view_clicked(self):
-
         indexes = self.tableWidget.selectionModel().selectedRows()
         id_row = indexes[0].row()
         login = self.tableWidget.item(id_row, 0).text()
-        self.user_change_form = UserChangeForm(self.db, login, self)
-        self.user_change_form.show()
-
-
-
-
+        user_change_form = UserChangeForm(self.db, login, self)
+        user_change_form.show()
 
     def get_user_type(self):
         if self.rBtn_admin.isChecked():

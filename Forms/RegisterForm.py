@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets
-
 from Forms import LoginForm
 from Models.UserType import UserType
 from QtDesign.py.Register import Ui_MainWindow
@@ -21,8 +20,8 @@ class RegisterForm(QtWidgets.QMainWindow, Ui_MainWindow):
             self.edit_name2.text(),
             self.edit_name3.text()
         )
-        self.loginForm = LoginForm.LoginWindow(self.db)
-        self.loginForm.show()
+        login_form = LoginForm.LoginWindow(self.db)
+        login_form.show()
         self.close()
 
     def checked_radio_btn(self):

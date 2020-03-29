@@ -3,6 +3,7 @@ import pymysql.cursors
 import hashlib
 import os
 
+from Models.BackUp import BackUp
 from Models.User import User
 from Models.UserStatus import UserStatus
 
@@ -67,6 +68,54 @@ class DBHelper:
         self.cursor.execute(f"INSERT IGNORE INTO {table}({key}) VALUES ('{value}') ")
         self.cursor.execute("UNLOCK TABLE ")
         self.cursor.fetchone()
+
+    def backup_user(self):
+        self.cursor.execute("SELECT * FROM users_backup ORDER BY change_date DESC limit 1")
+        result = self.cursor.fetchone()
+
+        if result is not None:
+            backup = BackUp(result)
+            self.cursor.execute(f"DELETE FROM users_backup WHERE id = {backup.id}")
+            self.connect.commit()
+
+            if backup.operation_type == "Update":
+                self.backup_user_on_update(backup)
+            elif backup.operation_type == "Delete":
+                self.backup_user_on_delete(backup)
+        else:
+            raise ValueError('No more backups')
+
+    def backup_user_on_delete(self, backup):
+        sql_query = f"INSERT INTO users(id, login, password, salt, status, role, block_begin, block_end, " \
+                    f"registration_date, id_name1, id_name2, id_name3, id_personal_info) " \
+                    f"VALUES ({backup.user_id}, '{backup.login}', '{backup.password}', '{backup.salt}', " \
+                    f"'{backup.status}', '{backup.role}', '{backup.block_begin}', '{backup.block_begin}', " \
+                    f"'{backup.register_date}', {backup.id_name1}, {backup.id_name2}, {backup.id_name3}, " \
+                    f"{backup.id_personal_info}) ".replace("'None'", "NULL")
+        self.cursor.execute("LOCK TABLE users WRITE, users_backup READ ")
+        self.cursor.execute(sql_query)
+        self.cursor.execute("UNLOCK TABLE ")
+        self.connect.commit()
+
+    def backup_user_on_update(self, backup):
+        sql_query = f"UPDATE users SET " \
+                   f"password = '{backup.password}', salt = '{backup.salt}', role = '{backup.role}', " \
+                   f"status = '{backup.status}', block_begin = '{backup.block_begin}', " \
+                   f"block_end = '{backup.block_end}', id_name1 = {backup.id_name1}, " \
+                   f"id_name2 = {backup.id_name2}, id_name3 = {backup.id_name3}, " \
+                   f"id_personal_info = {backup.id_personal_info} " \
+                   f"WHERE id = '{backup.user_id}'".replace("'None'", "NULL")
+
+        print(sql_query)
+        self.cursor.execute("LOCK TABLE users WRITE, users_backup WRITE ")
+        self.cursor.execute(sql_query)
+        self.cursor.execute("UNLOCK TABLE ")
+        self.connect.commit()
+
+        self.cursor.execute(f"DELETE FROM users_backup"
+                            f" WHERE user_id = {backup.user_id}"
+                            f" ORDER BY change_date DESC limit 1")
+        self.connect.commit()
 
     def create_user(self, login, password, role, name1, name2, name3):
         salt = os.urandom(32).hex()

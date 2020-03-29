@@ -12,5 +12,3 @@ class User:
         self.name2 = info[8]
         self.name3 = info[9]
         self.id_personal_info = info[10]
-
-

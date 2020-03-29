@@ -1,5 +1,4 @@
-
-#python -m PyQt5.uic.pyuic -x UserChange.ui -o UserChange.py
+# python -m PyQt5.uic.pyuic -x Administration.ui -o Administration.py
 from PyQt5 import QtWidgets
 from Forms.LoginForm import LoginWindow
 from Service.DBHelper import DBHelper

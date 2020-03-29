@@ -9,6 +9,7 @@ class ProfileForm(QtWidgets.QMainWindow, Ui_ProfileWindow):
         self.setupUi(self)
         self.db = db
         self.user = user
+        self.administration_form = None
         self.edit_name1.setText(self.user.name1)
         self.edit_name2.setText(self.user.name2)
         self.edit_name3.setText(self.user.name3)
@@ -17,6 +18,6 @@ class ProfileForm(QtWidgets.QMainWindow, Ui_ProfileWindow):
         self.btn_administration.clicked.connect(self.open_administration_form)
 
     def open_administration_form(self):
-        administration_form = AdministrationForm.AdministrationForm(self.db, self.user)
-        administration_form.show()
+        self.administration_form = AdministrationForm.AdministrationForm(self.db, self.user)
+        self.administration_form.show()
         self.close()

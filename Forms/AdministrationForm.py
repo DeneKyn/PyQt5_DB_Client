@@ -13,6 +13,8 @@ class AdministrationForm(QtWidgets.QMainWindow, Ui_AdministrationWindow):
         self.setupUi(self)
         self.db = db
         self.user = user
+        self.error_form = None
+        self.user_change_form = None
         self.users = self.db.get_search_users()
         self.table_fill(self.users)
         self.btn_find.clicked.connect(self.filter_users)
@@ -26,8 +28,8 @@ class AdministrationForm(QtWidgets.QMainWindow, Ui_AdministrationWindow):
             self.filter_users()
         except ValueError as err:
             s = str(err)
-            error = ErrorDialog(s)
-            error.show()
+            self.error_form = ErrorDialog(s)
+            self.error_form.show()
 
     def table_fill(self, users):
         self.tableWidget.setRowCount(len(users))
@@ -62,8 +64,8 @@ class AdministrationForm(QtWidgets.QMainWindow, Ui_AdministrationWindow):
         indexes = self.tableWidget.selectionModel().selectedRows()
         id_row = indexes[0].row()
         login = self.tableWidget.item(id_row, 0).text()
-        user_change_form = UserChangeForm(self.db, login, self)
-        user_change_form.show()
+        self.user_change_form = UserChangeForm(self.db, login, self)
+        self.user_change_form.show()
 
     def get_user_type(self):
         if self.rBtn_admin.isChecked():

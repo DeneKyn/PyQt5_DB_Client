@@ -9,12 +9,15 @@ class LoginWindow(QtWidgets.QMainWindow, Ui_LoginWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
         self.db = db
+        self.profile_form = None
+        self.error_from = None
+        self.register_form = None
         self.btn_register.clicked.connect(self.open_registration_form)
         self.btn_login.clicked.connect(self.open_profile_form)
 
     def open_registration_form(self):
-        register_form = RegisterForm.RegisterForm(self.db)
-        register_form.show()
+        self.register_form = RegisterForm.RegisterForm(self.db)
+        self.register_form.show()
         self.close()
 
     def open_profile_form(self):
@@ -23,11 +26,11 @@ class LoginWindow(QtWidgets.QMainWindow, Ui_LoginWindow):
                 self.edit_login.text(),
                 self.edit_password.text(),
             )
-            profile_form = ProfileForm.ProfileForm(self.db, user)
-            profile_form.show()
+            self.profile_form = ProfileForm.ProfileForm(self.db, user)
+            self.profile_form.show()
             self.close()
 
         except ValueError as err:
             s = str(err)
-            error = ErrorDialog(s)
-            error.show()
+            self.error_from = ErrorDialog(s)
+            self.error_from.show()

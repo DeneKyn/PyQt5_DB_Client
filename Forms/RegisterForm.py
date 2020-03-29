@@ -9,6 +9,7 @@ class RegisterForm(QtWidgets.QMainWindow, Ui_MainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
         self.db = db
+        self.login_form = None
         self.btn_register.clicked.connect(self.register)
 
     def register(self):
@@ -20,8 +21,8 @@ class RegisterForm(QtWidgets.QMainWindow, Ui_MainWindow):
             self.edit_name2.text(),
             self.edit_name3.text()
         )
-        login_form = LoginForm.LoginWindow(self.db)
-        login_form.show()
+        self.login_form = LoginForm.LoginWindow(self.db)
+        self.login_form.show()
         self.close()
 
     def checked_radio_btn(self):

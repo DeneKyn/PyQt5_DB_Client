@@ -2,12 +2,20 @@ import pymysql
 import pymysql.cursors
 import hashlib
 import os
-
+import re
+from datetime import datetime
 from Models.BackUp import BackUp
 from Models.User import User
 from Models.UserStatus import UserStatus
 
-S = 'OnlineStoreDB'
+
+def is_user_ban(block_end):
+    if type(block_end) == datetime:
+        diff = int((block_end - datetime.now()).total_seconds())
+        print(diff)
+        if diff > 0:
+            return True
+    return False
 
 
 class DBHelper:
@@ -42,6 +50,7 @@ class DBHelper:
         self.cursor.fetchone()
         self.connect.commit()
 
+
     def block_user_temporary(self, login, seconds):
         self.cursor.execute(f"UPDATE users SET "
                             f"block_begin = NOW(), block_end = NOW() + INTERVAL {seconds} SECOND ,"
@@ -75,6 +84,11 @@ class DBHelper:
 
         if result is not None:
             backup = BackUp(result)
+            if not is_user_ban(backup.block_end):
+                backup.block_end = None
+                backup.block_begin = None
+                backup.status = UserStatus.Active.value
+
             self.cursor.execute(f"DELETE FROM users_backup WHERE id = {backup.id}")
             self.connect.commit()
 
@@ -106,7 +120,6 @@ class DBHelper:
                    f"id_personal_info = {backup.id_personal_info} " \
                    f"WHERE id = '{backup.user_id}'".replace("'None'", "NULL")
 
-        print(sql_query)
         self.cursor.execute("LOCK TABLE users WRITE, users_backup WRITE ")
         self.cursor.execute(sql_query)
         self.cursor.execute("UNLOCK TABLE ")
@@ -198,3 +211,4 @@ class DBHelper:
                 raise ValueError('Login or password are incorrect')
         else:
             raise ValueError('Login or password are incorrect')
+

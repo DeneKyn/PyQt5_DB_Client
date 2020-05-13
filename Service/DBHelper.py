@@ -5,6 +5,9 @@ import os
 import re
 from datetime import datetime
 from Models.BackUp import BackUp
+from Models.Offers import Offers
+from Models.Product import Product
+from Models.Purchases import Purchase
 from Models.User import User
 from Models.UserStatus import UserStatus
 
@@ -25,18 +28,22 @@ class DBHelper:
             user='student',
             password='student',
             db= 'OnlineStoreDB',
-            charset='utf8mb4'
+            charset='utf8mb4',
+            cursorclass = pymysql.cursors.DictCursor
         )
         self.cursor = self.connect.cursor()
 
-    def update_user_type(self, login, user_type):
+    def update_user_type(self, login, user_type):       
+
         self.cursor.execute(f"UPDATE users SET "
                             f"role = '{user_type}' "
                             f"WHERE login = '{login}' ")
+                            
         self.cursor.fetchone()
         self.connect.commit()
 
-    def unlock_user(self, login):
+    def unlock_user(self, login):       
+
         self.cursor.execute(f"UPDATE users SET "
                             f"block_begin = NULL, block_end= NULL, status='{UserStatus.Active.value}' "
                             f"WHERE login = '{login}'")
@@ -51,7 +58,7 @@ class DBHelper:
         self.connect.commit()
 
 
-    def block_user_temporary(self, login, seconds):
+    def block_user_temporary(self, login, seconds):  
         self.cursor.execute(f"UPDATE users SET "
                             f"block_begin = NOW(), block_end = NOW() + INTERVAL {seconds} SECOND ,"
                             f" status='{UserStatus.Blocked.value}' "
@@ -60,8 +67,8 @@ class DBHelper:
         self.connect.commit()
         self.create_unlock_event(login, seconds)
 
-    def create_unlock_event(self, login, seconds):
-        self.cursor.execute(f"DROP EVENT IF EXISTS unlock_event_{login}")
+    def create_unlock_event(self, login, seconds):              
+        self.cursor.execute(f"DROP EVENT IF EXISTS unlock_event_{login}")        
         self.connect.commit()
         self.cursor.execute(f"CREATE EVENT unlock_event_{login} "
                             f"ON SCHEDULE "
@@ -79,23 +86,12 @@ class DBHelper:
         self.cursor.fetchone()
 
     def backup_user(self):
-        self.cursor.execute("SELECT * FROM users_backup ORDER BY change_date DESC limit 1")
+        self.cursor.execute("SELECT id FROM users_backup ORDER BY change_date DESC limit 1")
         result = self.cursor.fetchone()
 
         if result is not None:
-            backup = BackUp(result)
-            if not is_user_ban(backup.block_end):
-                backup.block_end = None
-                backup.block_begin = None
-                backup.status = UserStatus.Active.value
-
-            self.cursor.execute(f"DELETE FROM users_backup WHERE id = {backup.id}")
+            self.cursor.execute("CALL undo_user_backup_procedure();")
             self.connect.commit()
-
-            if backup.operation_type == "Update":
-                self.backup_user_on_update(backup)
-            elif backup.operation_type == "Delete":
-                self.backup_user_on_delete(backup)
         else:
             raise ValueError('No more backups')
 
@@ -149,10 +145,11 @@ class DBHelper:
         self.cursor.fetchone()
         self.connect.commit()
 
-    def delete_user(self, login):
-        self.cursor.execute(f"DELETE FROM users WHERE login='{login}'")
+    def delete_user(self, login):        
+        self.cursor.execute(f"DELETE FROM users WHERE login='{login}'")        
         self.cursor.fetchone()
         self.connect.commit()
+
 
     def get_search_users(self, status='', user_type='', name1='', name2='', name3=''):
         self.connect.commit()
@@ -182,29 +179,28 @@ class DBHelper:
         self.connect.commit()
         self.cursor.execute(f"SELECT salt FROM users WHERE login = '{login}'")
         salt = self.cursor.fetchone()
-
         if salt is not None:
-            pass_hash = hashlib.sha512(password.encode('utf-8') + salt[0].encode('utf-8')).hexdigest()
+            salt = salt['salt']
+            pass_hash = hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
             self.cursor.execute(f"SELECT id FROM users WHERE login = '{login}' AND password = '{pass_hash}'")
             id_user = self.cursor.fetchone()
-
             if id_user is not None:
-                self.cursor.execute(f"SELECT users.id, login, status, role, block_begin, block_end,"
-                                    f" registration_date, name1, name2, name3, id_personal_info FROM users "
+                id_user = id_user['id']
+                self.cursor.execute(f"SELECT * FROM users "
                                     f"INNER JOIN names1 ON users.id_name1 = names1.id "
                                     f"INNER JOIN names2 ON users.id_name2 = names2.id "
                                     f"INNER JOIN names3 ON users.id_name3 = names3.id "
-                                    f"WHERE users.id = {id_user[0]} AND users.status = '{UserStatus.Active.value}' ")
+                                    f"WHERE users.id = {id_user} AND users.status = '{UserStatus.Active.value}' ")
                 user = self.cursor.fetchone()
-
+                print(user)
                 self.connect.commit()
 
                 if user is not None:
                     u = User(user)
+                    print(u)
                     self.cursor.execute(f"INSERT INTO auth_log(login, login_date, status, role) "
                                         f" VALUES ('{u.login}', NOW(), '{u.status}', '{u.role}')")
                     return u
-
                 else:
                     raise ValueError('User is blocked')
             else:
@@ -212,3 +208,98 @@ class DBHelper:
         else:
             raise ValueError('Login or password are incorrect')
 
+    def get_categories(self):
+        self.cursor.execute(f"SELECT id, category FROM categories")
+        result = self.cursor.fetchall()
+        print(result)
+        return result
+
+    def get_manufacturers(self):
+        self.cursor.execute(f"SELECT id, manufacturer FROM manufacturers")
+        result = self.cursor.fetchall()
+        return result
+
+    def get_product_for_client(self, model = '', category = '', manufacturer = '', sort_type = 0):
+        if category == 'All':
+            category = ''
+        if manufacturer == 'All':
+            manufacturer = ''
+        self.cursor.execute(f"CALL get_product_for_user('{model}', '{category}', '{manufacturer}', {sort_type});")
+        result = self.cursor.fetchall()
+        products = []
+        for p in result:
+            products.append(Product(p))
+        return products
+
+    def get_product_offers(self, id):
+        self.cursor.execute(f"CALL get_product_offers({id});")
+        result = self.cursor.fetchall()
+        offers = []
+        for o in result:
+            offers.append(Offers(o))
+        return offers
+
+    def buy_product(self, product, _amount, client_id):
+        self.cursor.execute(f"CALL buy_product({product.id}, {product.price}, {_amount}, {client_id});")
+        print(f"CALL buy_product({product.id}, {product.price}, {_amount}, {client_id});")
+        self.cursor.fetchone()
+        self.connect.commit()
+
+    def edit_user(self, id, password, name1, name2, name3):
+        self.cursor.execute(f"CALL edit_user({id}, '{password}', '{name1}', '{name2}', '{name3}')")
+        self.cursor.fetchone()
+        self.connect.commit()
+
+    def get_user_purchases(self, id):
+        self.cursor.execute(f"CALL get_user_purchases({id});")
+        result = self.cursor.fetchall()
+        purchases = []
+        for p in result:
+            purchases.append(Purchase(p))
+        return purchases
+
+    def get_provider_products(self, id):
+        self.cursor.execute(f"CALL get_provider_products({id});")
+        print(f"CALL get_provider_products({id});")
+        result = self.cursor.fetchall()
+        purchases = []
+        for p in result:
+            purchases.append(Purchase(p))
+        return purchases
+
+    def get_provider_sales(self, id):
+        self.cursor.execute(f"CALL get_provider_sales({id});")
+
+        result = self.cursor.fetchall()
+        purchases = []
+        for p in result:
+            purchases.append(Purchase(p))
+        return purchases
+
+    def insert_category(self, category):
+        self.cursor.execute(f"CALL insert_category('{category}');")
+        self.cursor.fetchone()
+        self.connect.commit()
+
+    def insert_manufacturer(self, manufacturer):
+        self.cursor.execute(f"CALL insert_manufacturer('{manufacturer}');")
+        self.cursor.fetchone()
+        self.connect.commit()
+
+    def insert_product(self, _model, _category, _manufacturer, _amount, _price, _provider):
+        self.cursor.execute(f"CALL insert_product('{_model}', '{_category}', '{_manufacturer}',"
+                            f" {_amount}, {_price}, {_provider});")
+        self.cursor.fetchone()
+        self.connect.commit()
+
+    def insert_provider_info(self, id_p, _company, _UNN, _bank_branch):
+        self.cursor.execute(f"CALL insert_provider_info({id_p}, '{_company}', {_UNN}, '{_bank_branch}');")
+        self.connect.commit()
+
+    def get_providers(self, sort_type):
+        self.cursor.execute(f"CALL get_providers({sort_type});")
+        result = self.cursor.fetchall()
+        offers = []
+        for o in result:
+            offers.append(Offers(o))
+        return offers

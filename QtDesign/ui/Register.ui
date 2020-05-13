@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>313</width>
-    <height>459</height>
+    <width>265</width>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,12 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QFrame" name="LoginAndPass">
+        <property name="maximumSize">
+         <size>
+          <width>245</width>
+          <height>72</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -65,6 +71,12 @@
       </item>
       <item>
        <widget class="QFrame" name="frame_2">
+        <property name="maximumSize">
+         <size>
+          <width>245</width>
+          <height>101</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -116,51 +128,6 @@
          </item>
          <item row="2" column="1">
           <widget class="QLineEdit" name="edit_name3"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QFrame" name="frame">
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbl_select">
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Select a user type</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QRadioButton" name="rBtn_client">
-           <property name="text">
-            <string>Client</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QRadioButton" name="rBtn_provider">
-           <property name="text">
-            <string>Provider</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QRadioButton" name="rBtn_admin">
-           <property name="text">
-            <string>Admin</string>
-           </property>
-          </widget>
          </item>
         </layout>
        </widget>

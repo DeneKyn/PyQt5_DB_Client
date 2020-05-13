@@ -1,4 +1,4 @@
-# python -m PyQt5.uic.pyuic -x Administration.ui -o Administration.py
+# python -m PyQt5.uic.pyuic -x AddPromo.ui -o AddPromo.py
 from PyQt5 import QtWidgets
 from Forms.LoginForm import LoginWindow
 from Service.DBHelper import DBHelper

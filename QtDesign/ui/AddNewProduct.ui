@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Add_New_Product</class>
+ <widget class="QMainWindow" name="Add_New_Product">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>276</width>
+    <height>210</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+*{
+background: #D1C4E9;
+}
+
+QLineEdit
+{
+background: transparent;
+border: 1px solid #512DA8;
+font: 12pt &quot;Times New Roman&quot;;
+}
+QLineEdit:focus {
+ outline:none; }
+
+QLabel{
+	color: #673AB7;
+	font: 15pt &quot;Times New Roman&quot;;
+	font-weight:bold;
+}
+
+QPushButton{
+color: #FFFFFF;
+background: #00BCD4;
+border-radius: 0px;
+font: 12pt &quot;Times New Roman&quot;;
+}
+
+QRadioButton{
+color: #673AB7;
+	font: 12pt &quot;Times New Roman&quot;;
+	font-weight:bold;
+}
+
+QSpinBox{
+background: transparent;
+border: 1px solid #512DA8;
+font: 12pt &quot;Times New Roman&quot;;
+color: #673AB7;
+}
+
+QComboBox{
+background: transparent;
+border: 1px solid #512DA8;
+font: 12pt &quot;Times New Roman&quot;;
+color: #673AB7;
+}
+
+QDateEdit{
+background: transparent;
+border	: 1px solid #512DA8;
+font: 14pt &quot;Times New Roman&quot;;
+color: #673AB7;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="lab_name">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>15</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="edit_name">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lab_price">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>15</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Price</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="spinBox_price"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lab_category">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>15</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Category</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="comboBox_category"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="lab_manufacturer">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>15</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Manufacturer</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="comboBox_manafacturer"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lab_amount">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>15</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Amount</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="spinBox_amount"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignHCenter">
+     <widget class="QPushButton" name="btn_add">
+      <property name="minimumSize">
+       <size>
+        <width>50</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Add</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <action name="actionAdd_catecory">
+   <property name="text">
+    <string>Add catecory</string>
+   </property>
+  </action>
+  <action name="actionAdd_manufacturer">
+   <property name="text">
+    <string>Add manufacturer</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
